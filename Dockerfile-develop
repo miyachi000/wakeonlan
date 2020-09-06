@@ -1,0 +1,25 @@
+FROM golang:1.15
+
+ARG UNAME=takumi
+ARG UID=1001
+ARG GNAME=takumi
+ARG GID=1001
+
+WORKDIR /go/src/github.com/miyachi000/myddns/app
+
+ENV GO111MODULE=on
+
+# realize web
+EXPOSE 5002
+
+# app port
+EXPOSE 8080
+
+RUN addgroup --gid $GID $GNAME \
+    && adduser --disabled-password --disabled-login --uid $UID -gid $GID $UNAME
+
+RUN GO111MODULE=off go get github.com/oxequa/realize
+
+USER "$UNAME"
+
+CMD ["realize", "start", "--server"]
